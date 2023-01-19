@@ -8,24 +8,21 @@ import Footer from "./Footer";
 import { db } from "../firebase";
 import app from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
+import { useDispatch } from "react-redux";
+import { setMovies } from "../features/movie/movieSlice";
 const Home = () => {
-  const [movies, setMovies] = useState([]);
+  const dispatch = useDispatch();
   const colRef = collection(db, "movies");
-  // useEffect(() => {
-  //   getDoc(colRef).then((snapshot) => {
-  //     console.log(snapshot);
-  //   });
-  // }, []);
 
   useEffect(() => {
     getDocs(colRef).then((snapshot) => {
       let moviesArr = snapshot.docs.map((doc) => {
         return { ...doc.data(), id: doc.id };
       });
-      setMovies(moviesArr);
+
+      dispatch(setMovies(moviesArr));
     });
   }, []);
-  console.log(movies);
   return (
     <Container>
       <ImageSlider />
