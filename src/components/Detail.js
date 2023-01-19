@@ -1,16 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useParams } from "react-router-dom";
+import { db } from "../firebase";
+import { collection, getDocs } from "firebase/firestore";
 const Detail = () => {
+  const [movie, setMovie] = useState({
+    Title: "",
+    Poster: "",
+    Year: null,
+  });
+  const { id } = useParams();
+  const colRef = collection(db, "movies");
+  useEffect(() => {
+    // Grab movie info form db
+    getDocs(colRef, id).then((snapshot) => {
+      snapshot.docs.forEach((doc) => {
+        if (doc.id === id) {
+          setMovie(doc.data());
+        } else {
+        }
+      });
+    });
+  }, []);
   return (
     <Container>
       <Background>
-        <img
-          src="https://static-koimoi.akamaized.net/wp-content/new-galleries/2015/08/talvar-movie-poster-2.jpg"
-          alt="background"
-        />
+        <img src={movie.Poster} alt="background" />
       </Background>
       <ImageTitle>
-        <img src="/details/detail.png" alt="title" />
+        {/* <img src="/details/detail.png" alt="title" /> */}
+        <h2>{movie.Title}</h2>
       </ImageTitle>
       \
       <Controls>
