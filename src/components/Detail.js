@@ -28,7 +28,6 @@ const Detail = () => {
         <img src={movie.Poster} alt="background" />
       </Background>
       <ImageTitle>
-        {/* <img src="/details/detail.png" alt="title" /> */}
         <h2>{movie.Title}</h2>
       </ImageTitle>
       \
