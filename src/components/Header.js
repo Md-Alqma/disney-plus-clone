@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import {
   selectUserName,
@@ -10,13 +10,25 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 // import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth, provider } from "../firebase";
-import { signInWithPopup, signOut } from "firebase/auth";
-
+import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
+import { Link } from "react-router-dom";
 const Header = () => {
   const userName = useSelector(selectUserName);
   const userPhoto = useSelector(selectUserPhoto);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      dispatch(
+        setUserLogin({
+          name: user.displayName,
+          email: user.email,
+          photo: user.photoURL,
+        })
+      );
+    })
+  },[])
   const signIn = () => {
     signInWithPopup(auth, provider).then((result) => {
       let user = result.user;
@@ -27,6 +39,7 @@ const Header = () => {
           photo: user.photoURL,
         })
       );
+      navigate("/");
     });
   };
 
@@ -38,7 +51,10 @@ const Header = () => {
   };
   return (
     <Container>
-      <Logo src="images/logo.svg" />
+      <Link to="/">
+        <Logo src="images/logo.svg" />
+      </Link>
+
       {!userName ? (
         <LoginContainer>
           <Login onClick={signIn}>Login</Login>
